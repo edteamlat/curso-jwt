@@ -1,0 +1,20 @@
+import jwt
+
+# Importa el token
+token = ""
+
+# Secret
+secret = "this-is-a-very-long-and-secure-secret"
+
+# Valida el token
+try:
+  payload = jwt.decode(token, secret, algorithms=["HS256"])
+except jwt.exceptions.ExpiredSignatureError:
+  print("El token ha caducado")
+except jwt.exceptions.InvalidSignatureError:
+  print("La firma del token no es válida")
+except jwt.exceptions.DecodeError:
+  print("El token no es válido")
+else:
+  print("El token es válido")
+

@@ -1,0 +1,42 @@
+package main
+
+import (
+	"fmt"
+
+	jwt "github.com/dgrijalva/jwt-go"
+)
+
+// Token JWT a verificar
+var (
+  tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsZXh5cy5sb3phZGFAZ21haWwuY29tIiwiZXhwIjoxNjk2NzgyMDcxLCJpYXQiOjE2OTY2OTU2NzEsIm5hbWUiOiJBbGV4eXMgTG96YWRhIn0.smFywQn4D2IeWBDd2JWUYLwLYMH8p53rCHhFOnk7d5M"
+
+  secretKey = []byte("this-is-a-very-long-and-secure-secret")
+)
+
+func validateMethodAndGetSecret(token *jwt.Token) (any, error) {
+	_, ok := token.Method.(*jwt.SigningMethodHMAC)
+  if !ok {
+		return nil, fmt.Errorf("Método de firma no válido")
+	}
+
+	return secretKey, nil
+}
+
+func Validate() {
+	token, err := jwt.Parse(tokenString, validateMethodAndGetSecret)
+	if err != nil {
+		fmt.Println("Error al parsear el token:", err)
+
+		return
+	}
+
+	// Si el token es válido, podemos acceder a la información en la carga (payload)
+	claims, ok := token.Claims.(jwt.MapClaims)
+  if !ok {
+		fmt.Println("No se pudieron obtener las reclamaciones del token")
+    return
+  }
+
+	fmt.Println("ID", claims["name"])
+	fmt.Println("Email", claims["email"])
+}
